@@ -24,7 +24,7 @@ end
 game = Game.new
 
 loop do
-    break if game.status == :ended
+    break if game.status != :continue
     
     puts game.board
     print "Your guess: "
