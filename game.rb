@@ -24,6 +24,10 @@ end
 max_turns = (ARGV[0] || 12).to_i
 pegs = (ARGV[1] || 4).to_i
 
+if max_turns <= 0 || pegs <= 0
+    raise "Number of turns and pegs must be positive"
+end
+
 game = Game.new(max_turns: max_turns, pegs: pegs)
 
 loop do
