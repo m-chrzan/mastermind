@@ -9,8 +9,7 @@ module Mastermind
             @current_turn = 1
             @board = Board.new
             @status = :continue
-            @code = 'qwer'
-            puts @code
+            @code = generate_code
             @code_counts = count_colors(@code)
         end
 
@@ -25,7 +24,7 @@ module Mastermind
         def count_colors colors
             counts = Hash.new(0)
             colors.each_char do |color|
-                counts[counts] += 1
+                counts[color] += 1
             end
 
             counts
@@ -40,16 +39,19 @@ module Mastermind
 
         def determine_pegs guess
             guess_counts = count_colors(guess)
+            colors_counted = Hash.new(0)
             pegs = ''
+
             guess.split('').each_with_index do |color, i|
-                if color == color[i]
+                if color == @code[i]
                     pegs << "o"
                     guess_counts[color] -= 1
+                    colors_counted[color] += 1
                 end
             end
 
             guess_counts.each do |color, number|
-                ([number, @code_counts[color]].min).times do
+                ([number, @code_counts[color] - colors_counted[color]].min).times do
                     pegs << '.'
                 end
             end
@@ -59,8 +61,10 @@ module Mastermind
 
         def check_win_conditions guess
             if guess == @code
+                board.reveal(@code)
                 :won
             elsif @current_turn== @max_turns
+                board.reveal(@code)
                 :lost
             else
                 :continue
@@ -76,15 +80,27 @@ module Mastermind
     class Board
         def initialize
             @code = '????'
-            @board = Array.new(12, {guess: '....', pegs: '    '})
+            @board = Array.new(12, {guess: '....', pegs: ''})
             @max_turns = 12
             @turn = 0
         end
 
         def update_board guess, pegs
-            @board[@turn]['guess'] = guess
-            @board[@turn]['pegs'] = pegs
+            @board[@turn] = {:guess => guess, :pegs => pegs}
             @turn += 1
+        end
+
+        def reveal code
+            @code = code
+        end
+
+        def to_s
+            string = "|#{@code}| Turn: #{@turn}/#{@max_turns}\n"
+            @board.reverse.each do |row|
+                string << "|#{row[:guess]}|#{row[:pegs].ljust(4)}|\n"
+            end
+
+            string
         end
     end
 end
