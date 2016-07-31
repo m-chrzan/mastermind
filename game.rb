@@ -1,0 +1,2 @@
+#!/bin/ruby
+require './mastermind'
