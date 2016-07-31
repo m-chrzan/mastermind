@@ -1,13 +1,14 @@
 module Mastermind
     class Game
-        attr_reader :board, :status
+        attr_reader :board, :status, :pegs
 
         COLORS = ['q', 'w', 'e', 'r', 't', 'y']
 
-        def initialize
-            @max_turns = 12
+        def initialize max_turns: 12, pegs: 4
+            @max_turns = max_turns
+            @pegs = pegs
             @current_turn = 1
-            @board = Board.new
+            @board = Board.new max_turns, pegs
             @status = :continue
             @code = generate_code
             @code_counts = count_colors(@code)
@@ -15,7 +16,7 @@ module Mastermind
 
         def generate_code
             code = ""
-            4.times do
+            @pegs.times do
                 code << COLORS[rand(6)]
             end
             code
@@ -78,10 +79,11 @@ module Mastermind
     end
 
     class Board
-        def initialize
-            @code = '????'
-            @board = Array.new(12, {guess: '....', pegs: ''})
-            @max_turns = 12
+        def initialize max_turns = 12, num_pegs = 4
+            @max_turns = max_turns
+            @num_pegs = num_pegs
+            @code = '?' * @num_pegs
+            @board = Array.new(@max_turns, {guess: '.' * @num_pegs, pegs: ''})
             @turn = 0
         end
 
@@ -97,7 +99,7 @@ module Mastermind
         def to_s
             string = "|#{@code}| Turn: #{@turn}/#{@max_turns}\n"
             @board.reverse.each do |row|
-                string << "|#{row[:guess]}|#{row[:pegs].ljust(4)}|\n"
+                string << "|#{row[:guess]}|#{row[:pegs].ljust(@num_pegs)}|\n"
             end
 
             string

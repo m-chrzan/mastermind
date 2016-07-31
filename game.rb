@@ -3,7 +3,7 @@ require './mastermind'
 include Mastermind
 
 def next_guess game
-    guess = gets
+    guess = STDIN.gets
 
     if guess.nil?
         game.force_quit
@@ -13,7 +13,7 @@ def next_guess game
     guess = guess.chomp.downcase
 
     case guess
-    when /^[qwerty]{4}$/
+    when /^[qwerty]{#{game.pegs}}$/
         game.make_guess(guess)
     else
         puts "Invalid guess."
@@ -21,7 +21,10 @@ def next_guess game
     end
 end
 
-game = Game.new
+max_turns = (ARGV[0] || 12).to_i
+pegs = (ARGV[1] || 4).to_i
+
+game = Game.new(max_turns: max_turns, pegs: pegs)
 
 loop do
     break if game.status != :continue
