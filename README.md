@@ -2,6 +2,9 @@
 
 [Mastermind](https://en.wikipedia.org/wiki/Mastermind_(board_game)) for the command-line interface.
 
+
+Run `./game.rb` to start the game.
+
 You have 12 turns to guess a 4-letter code, composed of the letters "qwerty"
 (duplicates allowed). 
 
