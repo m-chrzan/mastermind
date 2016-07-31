@@ -39,5 +39,10 @@ loop do
     next_guess game
 end
 
-puts game.board
-puts "You #{game.status}!"
+case game.status
+when :ended
+    puts ""
+else
+    puts game.board
+    puts "You #{game.status}!"
+end
